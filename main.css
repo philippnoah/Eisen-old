@@ -1,0 +1,33 @@
+* {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+html, body {
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
+}
+
+.ta {
+  outline: none;
+  line-height: normal;
+  /* height: 100%; */
+  overflow: scroll;
+  padding-top: 30px;
+  background: white;
+}
+
+.par-row {
+  height: 50vh;
+}
+
+.header {
+  background: #f0f0f0;
+  padding: 5px !important;
+  /* font-weight: bold; */
+}
+
+.coller {
+  border: 1px solid rgba(0,0,0,0.1);
+}
