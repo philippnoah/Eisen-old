@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Eisen</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -11,7 +11,8 @@
   </head>
   <body>
     <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
+    <script src="./IOSetup.js"></script>
+    <!-- <script src="./renderer.js"></script> -->
 
   </body>
 </html>

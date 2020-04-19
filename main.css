@@ -11,8 +11,7 @@ html, body {
 
 .ta {
   outline: none;
-  line-height: normal;
-  /* height: 100%; */
+  line-height: 1.5;
   overflow: scroll;
   padding-top: 30px;
   background: white;
@@ -25,9 +24,18 @@ html, body {
 .header {
   background: #f0f0f0;
   padding: 5px !important;
-  /* font-weight: bold; */
+  font-family: "Montserrat";
+
 }
 
 .coller {
   border: 1px solid rgba(0,0,0,0.1);
+}
+
+.wrapper {
+  display: inline-block;
+}
+
+.check-box {
+  width: 25px;
 }
