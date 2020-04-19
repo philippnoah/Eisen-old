@@ -65,7 +65,57 @@ function columnWithHeading(num, heading) {
   return col;
 }
 
-function listenDown(e) {}
+function listenDown(e) {
+  var sel,
+    range;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    // console.log(sel);
+    var inner = getInnerMostChild(sel.anchorNode);
+    var par = nodeContainsParentWithClass(inner, "wrapper");
+    console.log(par);
+    if (e.which == 13 && par != null) {
+      console.log(par.parentNode.nextSibling);
+      if (par.parentNode.nextSibling) {
+        setCaretToNode(par.parentNode)
+      } else {
+        var br = document.createElement("div")
+        insertTask(br)
+        setCaretToNode(br)
+      }
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
+}
+
+function getInnerMostChild(el) {
+  while (el.firstChild) {
+    el = el.firstChild
+  }
+  return el
+}
+
+function nodeContainsParentWithClass(el, className) {
+    while (el.parentNode) {
+        if (el.className == className)
+            return el;
+        el = el.parentNode;
+    }
+    return null;
+}
+
+function setCaretToNode(node) {
+  var sel,
+    range;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    range = sel.getRangeAt(0);
+    range.collapse(true);
+    range.setStartAfter(node);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
 
 function listen(e) {
   // console.log(e.target.innerHTML);
@@ -80,16 +130,12 @@ function listen(e) {
 function saveTxtToPath(data, path) {
   try {
     if (!fs.existsSync(path)) {
-      fs.mkdirSync(
-        base,
-        {
-          recursive: true
-        },
-        err => {
-          alert("An error occurred.");
-          console.error(err);
-        }
-      );
+      fs.mkdirSync(base, {
+        recursive: true
+      }, err => {
+        alert("An error occurred.");
+        console.error(err);
+      });
     }
     fs.writeFileSync(path, data);
   } catch (e) {
@@ -129,22 +175,22 @@ function setupUI() {
 
 function parseInput(e) {
   var el;
-  console.log(e.which);
+  // console.log(e.which);
   if (e.which == 189) {
     document.execCommand("delete", null, false);
     var div = document.createElement("div");
     div.className = "";
     var id = makeID("task-", 10);
-    var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input type="checkbox" class="check-box" /></div>`;
+    var id2 = makeID("input-", 10);
+    var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
-    insertHTML(div);
+    insertTask(div);
   }
 }
 
 function handleClick(e) {
   e = e || window.event;
-  if (e.target.nodeName == "INPUT") {
-  } else if (e.target.id == "popover-bg") {
+  if (e.target.nodeName == "INPUT") {} else if (e.target.id == "popover-bg") {
     var el = document.getElementById("popover");
     el.parentNode.removeChild(el);
     el = document.getElementById("popover-bg");
@@ -163,14 +209,15 @@ function handleClick(e) {
   }
 }
 
-function insertHTML(el) {
-  var sel, range;
+function insertTask(el) {
+  var sel,
+    range;
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
     range = sel.getRangeAt(0);
     range.collapse(true);
     if (range.startOffset == 1 || true) {
       range.insertNode(el);
-      range.setStartAfter(el);
+      range.setStartAfter(el.firstChild);
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);
@@ -180,8 +227,7 @@ function insertHTML(el) {
 
 function makeID(prefix, length) {
   var result = "" + prefix;
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
