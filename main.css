@@ -39,3 +39,22 @@ html, body {
 .check-box {
   width: 25px;
 }
+
+.popover-bg {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+}
+
+.popover {
+  position: absolute;
+  left: 12.5%;
+  top: 12.5%;
+  min-width: 75vw;
+  height: 75vh;
+  background-color: white;
+  border: 0px solid white;
+}

@@ -135,7 +135,31 @@ function parseInput(e) {
     inp.type = "checkbox";
     inp.className = "check-box"
     task.appendChild(inp)
+    task.id = makeID("task-", 10)
+    task.addEventListener("click", e => handleClick(e), false);
     insertHTML(task);
+  }
+}
+
+function handleClick(e) {
+  if (e.target.nodeName == "INPUT") {
+
+  } else if (e.target.id == "popover-bg") {
+    var el = document.getElementById("popover");
+    el.parentNode.removeChild(el);
+    el = document.getElementById("popover-bg");
+    el.parentNode.removeChild(el);
+  } else {
+    console.log(e.target.id);
+    var popover = document.createElement("div");
+    popover.id = "popover"
+    popover.className = "popover"
+    var popoverBG = document.createElement("div");
+    popoverBG.id = "popover-bg"
+    popoverBG.className = "popover-bg"
+    popoverBG.addEventListener("click", e => handleClick(e), false);
+    document.body.appendChild(popoverBG)
+    document.body.appendChild(popover)
   }
 }
 
@@ -148,10 +172,19 @@ function insertHTML(el) {
     if (range.startOffset == 1 || true) {
       range.insertNode(el);
       range.setStartAfter(el);
-
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);
     }
   }
+}
+
+function makeID(prefix, length) {
+   var result           = ''+prefix;
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
 }
