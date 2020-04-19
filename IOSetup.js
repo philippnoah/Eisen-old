@@ -10,12 +10,12 @@ const remote = require("electron").remote;
 const app = remote.app;
 
 // global vars
-let base = app.getPath("userData")
+let base = app.getPath("userData");
 
 ipcRenderer.on("ready", (event, message) => {
-  setupUI()
-  loadFiles()
-})
+  setupUI();
+  loadFiles();
+});
 
 function readFile(num) {
   try {
@@ -70,7 +70,7 @@ function listenDown(e) {}
 function listen(e) {
   // console.log(e.target.innerHTML);
 
-  parseInput(e)
+  parseInput(e);
 
   var path = base + e.target.id + ".txt";
   let data = e.target.innerHTML;
@@ -80,12 +80,16 @@ function listen(e) {
 function saveTxtToPath(data, path) {
   try {
     if (!fs.existsSync(path)) {
-      fs.mkdirSync(base, {
-        recursive: true
-      }, err => {
-        alert("An error occurred.");
-        console.error(err);
-      });
+      fs.mkdirSync(
+        base,
+        {
+          recursive: true
+        },
+        err => {
+          alert("An error occurred.");
+          console.error(err);
+        }
+      );
     }
     fs.writeFileSync(path, data);
   } catch (e) {
@@ -101,7 +105,7 @@ function setupUI() {
 
   // container
   con = document.createElement("div");
-  con.className = "container-fluid";
+  con.className = "container-fluid main-con";
 
   // row
   r = document.createElement("div");
@@ -121,29 +125,25 @@ function setupUI() {
   con.appendChild(r);
 
   document.body.appendChild(con);
-
 }
 
 function parseInput(e) {
   var el;
-  // console.log(e.which);
+  console.log(e.which);
   if (e.which == 189) {
     document.execCommand("delete", null, false);
-    var task = document.createElement("div");
-    task.className = "wrapper"
-    var inp = document.createElement("input");
-    inp.type = "checkbox";
-    inp.className = "check-box"
-    task.appendChild(inp)
-    task.id = makeID("task-", 10)
-    task.addEventListener("click", e => handleClick(e), false);
-    insertHTML(task);
+    var div = document.createElement("div");
+    div.className = "";
+    var id = makeID("task-", 10);
+    var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input type="checkbox" class="check-box" /></div>`;
+    div.innerHTML = inp;
+    insertHTML(div);
   }
 }
 
 function handleClick(e) {
+  e = e || window.event;
   if (e.target.nodeName == "INPUT") {
-
   } else if (e.target.id == "popover-bg") {
     var el = document.getElementById("popover");
     el.parentNode.removeChild(el);
@@ -152,20 +152,19 @@ function handleClick(e) {
   } else {
     console.log(e.target.id);
     var popover = document.createElement("div");
-    popover.id = "popover"
-    popover.className = "popover"
+    popover.id = "popover";
+    popover.className = "popover";
     var popoverBG = document.createElement("div");
-    popoverBG.id = "popover-bg"
-    popoverBG.className = "popover-bg"
+    popoverBG.id = "popover-bg";
+    popoverBG.className = "popover-bg";
     popoverBG.addEventListener("click", e => handleClick(e), false);
-    document.body.appendChild(popoverBG)
-    document.body.appendChild(popover)
+    document.body.appendChild(popoverBG);
+    document.body.appendChild(popover);
   }
 }
 
 function insertHTML(el) {
-  var sel,
-    range;
+  var sel, range;
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
     range = sel.getRangeAt(0);
     range.collapse(true);
@@ -180,11 +179,12 @@ function insertHTML(el) {
 }
 
 function makeID(prefix, length) {
-   var result           = ''+prefix;
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
+  var result = "" + prefix;
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
