@@ -71,22 +71,31 @@ function listenDown(e) {
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
     // console.log(sel);
     var inner = getInnerMostChild(sel.anchorNode);
-    var par = nextParentWithClass(inner, "wrapper");
     console.log(par);
-    if (e.which == 13 && par != null) {
+    if (e.which == 13 && nextParentWithClass(inner, "wrapper") != null) {
+      var par = nextParentWithClass(inner, "wrapper");
       var nodesib = findNextNodeWithSibling(par)
       console.log("sibling", nodesib);
-        setCaretAfterNode(nodesib)
-        document.execCommand('insertHTML', false, '<div><br/></div>');
-        // setCaretAfterNode(nodesib.nextSibling.firstChild)
-        e.preventDefault()
-        e.stopPropagation()
+      setCaretAfterNode(nodesib)
+      document.execCommand('insertHTML', false, '<div><br/></div>');
+      // setCaretAfterNode(nodesib.nextSibling.firstChild)
+      e.preventDefault()
+      e.stopPropagation()
+    } else if (e.which == 13 && nextParentWithClass(inner, "heading-1")  != null) {
+      var par = nextParentWithClass(inner, "heading-1");
+      var nodesib = findNextNodeWithSibling(par)
+      console.log("sibling", nodesib);
+      setCaretAfterNode(nodesib)
+      document.execCommand('insertHTML', false, '<div><br/></div>');
+      // setCaretAfterNode(nodesib.nextSibling.firstChild);
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 }
 
 function findNextNodeWithSibling(el) {
-  while(el.nextSibling == null) {
+  while (el.nextSibling == null) {
     if (el.className.includes("ta")) {
       return el.lastChild
     }
@@ -103,12 +112,12 @@ function getInnerMostChild(el) {
 }
 
 function nextParentWithClass(el, className) {
-    while (el.parentNode) {
-        if (el.className == className)
-            return el;
-        el = el.parentNode;
-    }
-    return null;
+  while (el.parentNode) {
+    if (el.className == className)
+      return el;
+    el = el.parentNode;
+  }
+  return null;
 }
 
 function setCaretAfterNode(node) {
@@ -135,6 +144,15 @@ function setCaret(node, offset) {
     range.collapse(true);
     sel.removeAllRanges();
     sel.addRange(range);
+  }
+}
+
+function getCaret() {
+  var sel,
+    range;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    range = sel.getRangeAt(0);
+    return {node: sel.anchorNode, offset: range.startOffset}
   }
 }
 
@@ -196,7 +214,8 @@ function setupUI() {
 
 function parseInput(e) {
   var el;
-  // console.log(e.which);
+  console.log(e.which);
+  console.log("caret", getCaret())
   if (e.which == 189) {
     document.execCommand("delete", null, false);
     var div = document.createElement("div");
@@ -205,8 +224,13 @@ function parseInput(e) {
     var id2 = makeID("input-", 10);
     var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input onClick="handleCheckBoxClick(event)" type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
-    // document.execCommand('insertHTML', false, '<br/>');
     insertTask(div);
+  } else if (e.which == 187) {
+    document.execCommand("delete", null, false);
+    var bold1 = document.createElement("div")
+    bold1.className = "heading-1"
+    bold1.innerHTML = ` <input class="hidden-input" contentEditable="false" type="checkbox"></input>`
+    insertTask(bold1)
   }
 }
 
