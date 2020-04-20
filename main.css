@@ -47,14 +47,18 @@ html, body {
 .wrapper {
   display: inline-block;
   background: rgba(0,0,0,0.1);
-  cursor: pointer;
+  /* cursor: pointer; */
   padding: 5px;
   margin: 5px;
   border-radius: 5px;
 }
 
 .wrapper:hover {
-  background: rgba(0,0,0,0.3);
+  /* background: rgba(0,0,0,0.3); */
+}
+
+.wrapper-1 {
+  display: block;
 }
 
 .check-box {

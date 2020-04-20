@@ -200,13 +200,13 @@ function parseInput(e) {
   if (e.which == 189) {
     document.execCommand("delete", null, false);
     var div = document.createElement("div");
-    div.className = "";
+    div.className = "wrapper-1";
     var id = makeID("task-", 10);
     var id2 = makeID("input-", 10);
     var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input onClick="handleCheckBoxClick(event)" type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
+    // document.execCommand('insertHTML', false, '<br/>');
     insertTask(div);
-    // document.execCommand('insertHTML', false, '<div><br/></div>');
   }
 }
 
@@ -228,17 +228,24 @@ function handleClick(e) {
     el = document.getElementById("popover-bg");
     el.parentNode.removeChild(el);
   } else {
+    return
     console.log(e.target.id);
-    var popover = document.createElement("div");
-    popover.id = "popover";
-    popover.className = "popover";
-    var popoverBG = document.createElement("div");
-    popoverBG.id = "popover-bg";
-    popoverBG.className = "popover-bg";
-    popoverBG.addEventListener("click", e => handleClick(e), false);
-    document.body.appendChild(popoverBG);
+    var popover = createDetailView(e.target.id)
     document.body.appendChild(popover);
   }
+}
+
+function createDetailView(id) {
+  var popover = document.createElement("div");
+  popover.id = "popover";
+  popover.className = "popover";
+  popover.innerHTML = `<p class="text-center">${id}</p>`
+  var popoverBG = document.createElement("div");
+  popoverBG.id = "popover-bg";
+  popoverBG.className = "popover-bg";
+  popoverBG.addEventListener("click", e => handleClick(e), false);
+  popoverBG.appendChild(popover)
+  return popoverBG
 }
 
 function insertNode(el) {
