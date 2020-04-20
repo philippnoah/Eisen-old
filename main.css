@@ -59,6 +59,7 @@ html, body {
 
 .check-box {
   width: 25px;
+  outline: none;
 }
 
 .popover-bg {

@@ -71,21 +71,28 @@ function listenDown(e) {
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
     // console.log(sel);
     var inner = getInnerMostChild(sel.anchorNode);
-    var par = nodeContainsParentWithClass(inner, "wrapper");
+    var par = nextParentWithClass(inner, "wrapper");
     console.log(par);
     if (e.which == 13 && par != null) {
-      console.log(par.parentNode.nextSibling);
-      if (par.parentNode.nextSibling) {
-        setCaretToNode(par.parentNode)
-      } else {
-        var br = document.createElement("div")
-        insertTask(br)
-        setCaretToNode(br)
-      }
-      e.preventDefault()
-      e.stopPropagation()
+      var nodesib = findNextNodeWithSibling(par)
+      console.log("sibling", nodesib);
+        setCaretAfterNode(nodesib)
+        document.execCommand('insertHTML', false, '<div><br/></div>');
+        // setCaretAfterNode(nodesib.nextSibling.firstChild)
+        e.preventDefault()
+        e.stopPropagation()
     }
   }
+}
+
+function findNextNodeWithSibling(el) {
+  while(el.nextSibling == null) {
+    if (el.className.includes("ta")) {
+      return el.lastChild
+    }
+    el = el.parentNode
+  }
+  return el
 }
 
 function getInnerMostChild(el) {
@@ -95,7 +102,7 @@ function getInnerMostChild(el) {
   return el
 }
 
-function nodeContainsParentWithClass(el, className) {
+function nextParentWithClass(el, className) {
     while (el.parentNode) {
         if (el.className == className)
             return el;
@@ -104,7 +111,7 @@ function nodeContainsParentWithClass(el, className) {
     return null;
 }
 
-function setCaretToNode(node) {
+function setCaretAfterNode(node) {
   var sel,
     range;
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
@@ -185,6 +192,7 @@ function parseInput(e) {
     var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
     insertTask(div);
+    // document.execCommand('insertHTML', false, '<div><br/></div>');
   }
 }
 
@@ -206,6 +214,23 @@ function handleClick(e) {
     popoverBG.addEventListener("click", e => handleClick(e), false);
     document.body.appendChild(popoverBG);
     document.body.appendChild(popover);
+  }
+}
+
+function insertNode(el) {
+  var sel,
+    range;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    range = sel.getRangeAt(0);
+    range.collapse(true);
+    if (range.startOffset == 1 || true) {
+      range.insertNode(el);
+      console.log(el.firstChild || el);
+      range.setStartAfter(el.firstChild || el);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }
 }
 
