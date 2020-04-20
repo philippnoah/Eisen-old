@@ -124,6 +124,20 @@ function setCaretAfterNode(node) {
   }
 }
 
+function setCaret(node, offset) {
+  var sel,
+    range;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    range = sel.getRangeAt(0);
+    range.collapse(true);
+    range.setStartAfter(node);
+    range.setStart(node, offset);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
+
 function listen(e) {
   // console.log(e.target.innerHTML);
 
@@ -189,11 +203,21 @@ function parseInput(e) {
     div.className = "";
     var id = makeID("task-", 10);
     var id2 = makeID("input-", 10);
-    var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input type="checkbox" class="check-box" id=${id2}/></div>`;
+    var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input onClick="handleCheckBoxClick(event)" type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
     insertTask(div);
     // document.execCommand('insertHTML', false, '<div><br/></div>');
   }
+}
+
+function handleCheckBoxClick(e) {
+  var node;
+  if (window.getSelection && (sel = window.getSelection()).rangeCount) {
+    range = sel.getRangeAt(0);
+    range.collapse(true);
+    setCaret(sel.anchorNode, range.startOffset)
+  }
+  e.stopPropagation()
 }
 
 function handleClick(e) {
@@ -225,7 +249,6 @@ function insertNode(el) {
     range.collapse(true);
     if (range.startOffset == 1 || true) {
       range.insertNode(el);
-      console.log(el.firstChild || el);
       range.setStartAfter(el.firstChild || el);
       range.collapse(true);
       sel.removeAllRanges();
