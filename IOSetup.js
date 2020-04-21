@@ -229,7 +229,7 @@ function parseInput(e) {
     document.execCommand("delete", null, false);
     var bold1 = document.createElement("div")
     bold1.className = "heading-1"
-    bold1.innerHTML = ` <input class="hidden-input" contentEditable="false" type="checkbox"></input>`
+    bold1.innerHTML = `<input class="hidden-input" type="checkbox"/>`
     insertTask(bold1)
   }
 }
