@@ -228,8 +228,8 @@ function parseInput(e) {
   } else if (e.which == 187) {
     document.execCommand("delete", null, false);
     var bold1 = document.createElement("div")
-    bold1.className = "heading-1"
-    bold1.innerHTML = `<input class="hidden-input" type="checkbox"/>`
+    bold1.style.display = "block"
+    bold1.innerHTML = `<div class="heading-1"><input class="hidden-input" type="checkbox"/></div>`
     insertTask(bold1)
   }
 }
