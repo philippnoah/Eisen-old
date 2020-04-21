@@ -71,19 +71,43 @@ function listenDown(e) {
   if (window.getSelection && (sel = window.getSelection()).rangeCount) {
     // console.log(sel);
     var inner = getInnerMostChild(sel.anchorNode);
-    console.log(par);
+    var pos = getCaret();
+    console.log(pos);
+    if (pos.node.className == "wrapper") {
+      if (e.which == 37 || e.which == 38) {
+        var prevSib = nextParentWithPrevSibling(pos.node).previousSibling
+        var tRan = document.createRange();
+        tRan.selectNodeContents(prevSib);
+        setCaret(prevSib, tRan.endContainer.endOffset)
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    if (e.which == 39 || e.which == 40) {
+      var nextSib = nextParentWithNextSibling(pos.node).nextSibling;
+      var isTask = firstChildHasClassRecursive(nextSib, "wrapper-1")
+      if (isTask) {
+        var firstChild = isTask.firstChild.firstChild.nextSibling
+        setCaret(firstChild, 0)
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
     if (e.which == 13 && nextParentWithClass(inner, "wrapper") != null) {
       var par = nextParentWithClass(inner, "wrapper");
-      var nodesib = findNextNodeWithSibling(par)
+      var nodesib = findNextParentNodeWithSibling(par)
       console.log("sibling", nodesib);
       setCaretAfterNode(nodesib)
       document.execCommand('insertHTML', false, '<div><br/></div>');
       // setCaretAfterNode(nodesib.nextSibling.firstChild)
       e.preventDefault()
       e.stopPropagation()
-    } else if (e.which == 13 && nextParentWithClass(inner, "heading-1")  != null) {
+    }
+    if (e.which == 13 && nextParentWithClass(inner, "heading-1")  != null) {
       var par = nextParentWithClass(inner, "heading-1");
-      var nodesib = findNextNodeWithSibling(par)
+      var nodesib = findNextParentNodeWithSibling(par)
       console.log("sibling", nodesib);
       setCaretAfterNode(nodesib)
       document.execCommand('insertHTML', false, '<div><br/></div>');
@@ -94,7 +118,31 @@ function listenDown(e) {
   }
 }
 
-function findNextNodeWithSibling(el) {
+function firstChildHasClassRecursive(node, className) {
+  while (node.firstChild) {
+    if (node.className.includes(className)) {
+      return node
+    }
+    node = node.firstChild;
+  }
+  return null
+}
+
+function nextParentWithNextSibling(el) {
+  while (el.nextSibling == null) {
+    el = el.parentNode
+  }
+  return el
+}
+
+function nextParentWithPrevSibling(el) {
+  while (el.previousSibling == null) {
+    el = el.parentNode
+  }
+  return el
+}
+
+function findNextParentNodeWithSibling(el) {
   while (el.nextSibling == null) {
     if (el.className.includes("ta")) {
       return el.lastChild
@@ -113,7 +161,7 @@ function getInnerMostChild(el) {
 
 function nextParentWithClass(el, className) {
   while (el.parentNode) {
-    if (el.className == className)
+    if ((el.className || "").includes(className))
       return el;
     el = el.parentNode;
   }
@@ -157,10 +205,7 @@ function getCaret() {
 }
 
 function listen(e) {
-  // console.log(e.target.innerHTML);
-
   parseInput(e);
-
   var path = base + e.target.id + ".txt";
   let data = e.target.innerHTML;
   saveTxtToPath(data, path);
@@ -213,9 +258,7 @@ function setupUI() {
 }
 
 function parseInput(e) {
-  var el;
   console.log(e.which);
-  console.log("caret", getCaret())
   if (e.which == 189) {
     document.execCommand("delete", null, false);
     var div = document.createElement("div");
@@ -225,7 +268,8 @@ function parseInput(e) {
     var inp = `<div class="wrapper" onClick="handleClick(event)" id=${id}><input onClick="handleCheckBoxClick(event)" type="checkbox" class="check-box" id=${id2}/></div>`;
     div.innerHTML = inp;
     insertTask(div);
-  } else if (e.which == 187) {
+  }
+  if (e.which == 187) {
     document.execCommand("delete", null, false);
     var bold1 = document.createElement("div")
     bold1.style.display = "block"
