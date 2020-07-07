@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/philippnoah/Eisen#readme",
   "devDependencies": {
-    "electron": "^8.2.1",
+    "electron": "^8.2.4",
     "electron-packager": "^14.2.1"
   },
   "dependencies": {
